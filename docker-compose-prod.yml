@@ -1,0 +1,44 @@
+version: '3.1'
+services:
+  db:
+    image: postgres:9.5
+    container_name: db
+    env_file: ./docker/.env
+#    ports:
+#      - 5432:5432
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: backend
+    container_name: backend
+    command: bash -c "sleep 4 && sh ./docker/entrypoint-prod.sh"
+    env_file:
+      - ./docker/.env
+    volumes:
+      - .:/code
+#    ports:
+#      - 80:80
+    links:
+      - db
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    env_file: ./docker/.env
+    ports:
+      - "80:80"
+    links:
+      - backend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: unless-stopped
+    volumes:
+      - ./logs/nginx:/tmp/logs
+      - ./nginx:/etc/nginx/conf.d/default.conf
+      - ./web/static:/opt/app/static
+      - ./web/media:/opt/app/media
+    depends_on:
+      - backend
