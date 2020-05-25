@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
+from datetime import timedelta
 
 import os
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.user',
+    'web',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +129,33 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+###################################################################
+##### CONFIG BROKER FOR CELERY
+###################################################################
+
+BROKER_URL = "amqp://{user}:{password}@rabbitmq:5672//?heartbeat=30".format(
+    user=os.environ.get('RABBITMQ_DEFAULT_USER'),
+    password=os.environ.get('RABBITMQ_DEFAULT_PASS')
+)
+# BROKER_REDIS =  'redis://redis:6379'
+broker_url = BROKER_URL
+
+CELERY_BROKER_URL = broker_url
+CELERY_RESULT_BACKEND = broker_url
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+###################################################################
+##### CONFIG CELERY TASK
+###################################################################
+
+
+CELERY_BEAT_SCHEDULE = {
+    'cotization': {
+        'task': 'apps.user.tasks.cotization',
+        'schedule': timedelta(minutes=1),
+
+    }
+}

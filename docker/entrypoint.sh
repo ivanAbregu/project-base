@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pip install --trusted-host=pypi.org --trusted-host=files.pythonhosted.org -r /code/requirements/dev.txt
+pip install -r /code/requirements/dev.txt
 ./manage.py makemigrations
 ./manage.py migrate
 
