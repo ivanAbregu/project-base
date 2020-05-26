@@ -6,6 +6,9 @@
 * Docker Compose
 * PostgreSQL
 * Django
+* Celery
+* RabbitMQ
+* Redis
 * django debug toolbar
 * ipython
 * ipdb
