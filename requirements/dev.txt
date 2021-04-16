@@ -1,7 +1,7 @@
 -r base.txt
 backcall==0.1.0
 decorator==4.4.2
-django-debug-toolbar==2.2
+django-debug-toolbar==2.2.1
 ipdb==0.13.2
 ipython==7.14.0
 ipython-genutils==0.2.0
